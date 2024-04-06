@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>On the Go By Byte Brigade</title>
+        <link href="{{ url_for('static', filename='/css/bootstrap.min.css') }}" rel="stylesheet">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    </head>
+    <style>
+        .box {
+            background-color: white;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5); /* horizontal-offset vertical-offset blur spread color */
+        }   
+        @keyframes blink {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .flash {
+        animation: blink 1s infinite;
+    }
+
+    </style>
+    <body>
+        {% include 'modal.html' %}
+
+        {% include 'navbar.html' %}
+
+        <div class="container mt-4">
+            <div class="alert alert-danger" role="alert" style="background-color: rgb(185, 0, 0);">
+                <center>
+                    <strong class="flash text-light h4">!!! For an emergency situation press the button below !!!</strong>
+                </center>
+            </div>
+            <div class="container">
+                <center>
+                    <button style="border: none; background-color: transparent;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="call_timer()">
+                        <img src="{{ url_for('static', filename='/images/emergency.jpg') }}" class="box" style="width: 20rem;" alt="emergency button">
+                    </button>
+                </center>
+            </div>
+<br>
+            <div class="card-container mt-4">
+                <div class="row">
+                    <div class="card mb-3 box">
+                        <div class="row g-0">
+                          <div class="col-md-4">
+                            <img src="{{ url_for('static', filename='/images/fire-brigade.png') }}" style="max-width: 15rem" class="img-fluid rounded-start" alt="Fire emergency">
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                              <h5 class="card-title">FIRE EMERGENCY</h5>
+                              <p class="card-text">For fire emergency like fire in some places press the button below</p>
+                              <button class="btn btn-primary" id="fireBtn" name="fire" onclick="fire()">Request Fire Emergency</button>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="card mb-3 box">
+                        <div class="row g-0">
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                  <h5 class="card-title">MEDICAL EMERGENCY</h5>
+                                  <p class="card-text">For medical emergency like an accident, instant treatment, and any type of medical help press the button below</p>
+                                  <button class="btn btn-primary" id="medicalBtn" name="medical" onclick="medical()">Request Medical Emergency</button>
+                                </div>
+                              </div>
+                            <div class="col-md-4">
+                                <img src="{{ url_for('static', filename='/images/ambulance.jpg') }}" style="max-width: 15rem; float: right;" class="img-fluid rounded-start" alt="Ambulance">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="card mb-3 box">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{{ url_for('static', filename='/images/police.jpg') }}" style="max-width: 15rem" class="img-fluid rounded-start" alt="Police">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                  <h5 class="card-title">POLICE EMERGENCY</h5>
+                                  <p class="card-text">For emergency like theft, murder, and any law violations press the button below</p>
+                                  <button class="btn btn-primary" id="#policeBtn" name="police" onclick="police()">Request Police Emergency</button>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            </div>
+        </div>
+
+        {% include 'footer.html' %}
+
+        <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
+        <script>
+            function medical() {
+navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    
+                    $.ajax({
+                url: '/insert_data_medical',
+                method: 'POST',
+                data: { lat: lat, lon: lon },
+                success: function(response) {
+                    console.log('Location updated successfully:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating location:', error);
+                }
+            });
+        });
+                }
+
+                function police() {
+navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    
+                    $.ajax({
+                url: '/insert_data_police',
+                method: 'POST',
+                data: { lat: lat, lon: lon },
+                success: function(response) {
+                    console.log('Location updated successfully:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating location:', error);
+                }
+            });
+        });
+                }
+
+                function fire() {
+navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    
+                    $.ajax({
+                url: '/insert_data_fire',
+                method: 'POST',
+                data: { lat: lat, lon: lon },
+                success: function(response) {
+                    console.log('Location updated successfully:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating location:', error);
+                }
+            });
+        });
+                }
+
+
+function emergency() {
+        navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+            $.ajax({
+                url: '/insert_data',
+                method: 'POST',
+                data: { lat: lat, lon: lon },
+                success: function(response) {
+                    console.log('Location updated successfully:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating location:', error);
+                }
+            });
+          });
+
+          navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+          $.ajax({
+                url: '/send_sms',
+                method: 'POST',
+                data: { lat: lat, lon: lon },
+                success: function(response) {
+                    console.log('requested successfully:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating:', error);
+                }
+            });
+        });
+        }
+
+
+            function updateUserLocation() {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    // Send the location data to the Flask server using AJAX
+                    $.ajax({
+                        url: '/update-location',
+                        method: 'POST',
+                        data: { lat: lat, lon: lon },
+                        success: function(response) {
+                            console.log('Location updated successfully:', response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error updating location:', error);
+                        }
+                    });
+                });
+            }
+
+            // Call updateUserLocation every 5 seconds
+            setInterval(updateUserLocation, 5000);
+
+        </script>
+    </body>
+</html>

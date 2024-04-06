@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vadodara Tourism WebApp By Byte Brigade</title>
+    <link href="{{ url_for('static', filename='/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='/css/main.css') }}" rel="stylesheet">
+
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+
+  </head>
+
+  <style>
+    #mapContainer {
+        width: 100%;
+        height: 90vh;
+    }
+    .info-bubble {
+        max-width: 300px;
+    }
+    .info-bubble img {
+        max-width: 300px;
+    }
+    #placeInfo {
+        position: fixed;
+        top: 10%;
+        left: 10px;
+        padding: 10px;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        z-index: 1000;
+    }
+  </style>
+
+  <body>
+
+    {% include 'navbar.html' %}
+    <div id="mapContainer"></div>
+    <div id="placeInfo"></div>
+    {% include 'footer.html' %}
+
+        <script>
+    var latitude = 28.362094001021873; // User's latitude
+    var longitude = 75.58708276813894; // User's longitude
+
+    var platform = new H.service.Platform({
+        'apikey': 'PfYWjyvQshH_R9L8mrcjhjhhEPcNjNKAardVwF96GyY'
+    });
+
+    var defaultLayers = platform.createDefaultLayers();
+    var map = new H.Map(
+        document.getElementById('mapContainer'),
+        defaultLayers.vector.normal.map,
+        {
+            zoom: 13
+        }
+    );
+
+    map.setCenter({ lat: latitude, lng: longitude });
+
+    var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+    var mapEvents = new H.mapevents.MapEvents(map);
+    var behavior = new H.mapevents.Behavior(mapEvents);
+
+    // Function to add a marker to the map
+    function addMarkerToMap(lat, lng, title, description, imageUrl, color, size) {
+        var icon = new H.map.Icon("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='" + color + "' width='" + size + "' height='" + size + "'%3E%3Cpath d='M12 2C7.58 2 4 5.58 4 10c0 4.24 6.75 11.46 7.4 12.21a1 1 0 0 0 1.2 0C13.25 21.46 20 14.24 20 10c0-4.42-3.58-8-8-8zm0 11.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z'/%3E%3C/svg%3E");
+        var marker = new H.map.Marker({ lat: lat, lng: lng }, { icon: icon });
+        map.addObject(marker);
+        if (title && description) {
+            marker.setData({ title: title, description: description, imageUrl: imageUrl });
+        }
+        marker.addEventListener('pointerenter', function (evt) {
+            var bubbleContent = '<div class="info-bubble">';
+            if (imageUrl) {
+                bubbleContent += '<img src="' + imageUrl + '" alt="' + title + '">';
+            }
+            bubbleContent += '<h5>' + title + '</h5>';
+            bubbleContent += '<p>' + description + '</p>';
+            bubbleContent += '</div>';
+            var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+                content: bubbleContent
+            });
+            ui.addBubble(bubble);
+        }, false);
+        marker.addEventListener('pointerleave', function (evt) {
+            ui.getBubbles().forEach(function(bubble) {
+                ui.removeBubble(bubble);
+            });
+        });
+        marker.addEventListener('tap', function (evt) {
+            displayPlaceInfo(description);
+        });
+    }
+
+    // Add a larger marker for the user's location
+    addMarkerToMap(latitude, longitude, "User Location", "", "", "blue", 40);
+
+    // Add markers for some other places
+    addMarkerToMap(28.35783137548167, 75.59008120585882, "ABC XYZ", "", "", "red", 24);
+        addMarkerToMap(28.359211678123117, 75.60447491586164, "ABC XYZ", "", "", "red", 24);
+        addMarkerToMap(28.35905386322853, 75.60455559336008, "ABC XYZ", "", "", "red", 24);
+        addMarkerToMap(28.361674638879695, 75.60391284012225, "ABC XYZ", "", "", "red", 24);
+        addMarkerToMap(28.363785652719585, 75.60846214253472, "ABC XYZ", "", "", "red", 24);
+        addMarkerToMap(28.362939259689757, 75.59515265522604, "ABC XYZ", "", "", "red", 24);
+        addMarkerToMap(28.361909754879115, 75.59486948050295, "ABC XYZ", "", "", "red", 24);
+        addMarkerToMap(28.361909754879115, 75.59486948050295, "ABC XYZ", "", "", "red", 24);
+        addMarkerToMap(28.361909754879115, 75.59486948050295, "ABC XYZ", "", "", "red", 24);
+
+    // Add more markers as needed
+
+    function displayPlaceInfo(description) {
+        var placeInfoDiv = document.getElementById('placeInfo');
+        placeInfoDiv.innerHTML = '<p>' + description + '</p>';
+    }
+</script>
+
+    
+    
+
+    <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
+  </body>
+</html>

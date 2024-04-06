@@ -1,0 +1,37 @@
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Requesting a HELP!</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div id="countdown"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    function call_timer() {
+        var timeleft = 10;
+        var downloadTimer = setInterval(function(){
+        if(timeleft <= 0){
+            clearInterval(downloadTimer);
+            document.getElementById("countdown").innerHTML = "Emergency Requested!";
+            // Call AJAX function to insert data into database
+            emergency();
+        } else {
+            document.getElementById("countdown").innerHTML = timeleft + " seconds remaining";
+        }
+        timeleft -= 1;
+        }, 1000);
+    }
+
+
+  </script>
